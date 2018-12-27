@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% load static %}
+{% block includes %}
+    <link rel="stylesheet" href="{% static "dashboard/styles.css" %}">
+{% endblock %}
+{% block body %}
+    {% for project in projects %}
+    <div class="project-card card">
+        <img class="card-img-top" src="{% static "images/city-minimalism-sv.jpg" %}">
+        <div class="card-body">
+            <h5 class="card-title">{{project.name}}</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="card-btn btn btn-primary">Open</a>
+            <a href="#" class="card-btn btn btn-primary">Edit</a>
+            <a href="#" class="card-btn btn btn-primary">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
