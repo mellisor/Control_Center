@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% load static %}
+{% block includes %}
+    <link rel="stylesheet" href="{% static "base/base.css" %}">
+    <link rel="stylesheet" href="{% static "login/login.css" %}">
+{% endblock %}
+{% block body %}
+    <div class="container login-container">
+        <div class="row">
+            <div class="col-md-6 login-form-1">
+                <h3>Sign In</h3>
+                <form method="post">
+                    {% csrf_token %}{% if user_does_not_exist is not None %}
+                    <p class="login_error">Incorrect username or password</p>{% endif %}
+                    <div class="form-group">
+                        <input name="username" type="text" class="form-control" placeholder="Username"/>
+                    </div>
+                    <div class="form-group">
+                        <input name="password" type="password" class="form-control" placeholder="Password"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btnSubmit" value="Login" />
+                    </div>
+                    <div class="form-group">
+                        <a href="#" class="btnForgetPwd">Forget Password?</a>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6 login-form-2">
+                <h3>Create Account</h3>
+                    <form method="post">
+                        {% csrf_token %}{% if user_already_exists is not None %}
+                        <p class="create_error">Username already exists</p>{% endif %}
+                        <div class="form-group">
+                            <input name="username" type="text" class="form-control" placeholder="Username" required/>
+                        </div>
+                        <div class="form-group">
+                            <input name="email" type="email" class="form-control" placeholder="Email" required/>
+                        </div>{% if password is not None %}
+                        <p class="create_error">Passwords do not match</p>{% endif %}
+                        <div class="form-group">
+                            <input name="password" type="password" class="form-control" placeholder="Password" required/>
+                        </div>
+                        <div class="form-group">
+                            <input name="password_confirm" type="password" class="form-control" placeholder="Confirm Password" required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btnSubmit" value="Create" />
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
