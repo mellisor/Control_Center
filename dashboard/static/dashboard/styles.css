@@ -16,3 +16,8 @@ body {
     margin: 5px;
     width : 5rem;
 }
+
+.modal-dialog {
+    text-align: left;
+    background-color: white;
+}

@@ -1,0 +1,75 @@
+{% extends 'auth_base.html' %}
+{% block title %}Edit a Project{% endblock %}
+{% block includes %}
+    <style>
+        .sidebar-wrapper {
+            width: 10%;
+            position: fixed;
+            left: 0;
+            text-align: left;
+            height: 100%;
+            background-color: rgb(71, 71, 71);
+            color: white;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            text-indent: 10px;
+            padding-left: 0px;
+        }
+
+        .sidebar-nav li {
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+        .sidebar-nav a {
+            display: block;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,.2)
+        }
+
+        .alert {
+            margin-left: 10%;
+        }
+    </style>
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script>
+        function createButton() {
+            proj = document.getElementById('project');
+            but = document.createElement('button');
+            but.setAttribute('class','btn');
+            but.setAttribute('id',proj.childNodes().length)
+            proj.appendChild(but);
+        }
+    </script>
+{% endblock %}
+{% block navbar %}
+<ul class="nav navbar-nav ml-auto">
+    <li class="nav-item"><a class="nav-link">Save</a></li>
+</ul>
+{% endblock %}
+{% block body %}
+    <div class="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li><a onclick="createButton()">Button</a></li>
+            <li><a onclick="createSlider()">Slider</a></li>
+        </ul>
+    </div>
+    {% if content|length is 0 %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Hi {{user}}! </strong>Add some content to this project using the bar to the left
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    <div id="project">
+        {{content|safe}}
+    </div>
+{% endblock %}
