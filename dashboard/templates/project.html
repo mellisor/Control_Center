@@ -1,12 +1,12 @@
 {% extends 'auth_base.html' %}
 {% block title %}Edit a Project{% endblock %}
+{% load static %}
 {% block includes %}
     <style>
         .sidebar-wrapper {
             width: 10%;
             position: fixed;
             left: 0;
-            text-align: left;
             height: 100%;
             background-color: rgb(71, 71, 71);
             color: white;
@@ -34,18 +34,51 @@
         .alert {
             margin-left: 10%;
         }
+
     </style>
-    <script
-    src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
     <script>
+
+        // Very hacky way to get stuff to work, popover needs quotes surrounding content, onclick needs quotes surrounding content, no quotes left to use;
+        var smp_btn = 'simple-button';
+        var val_sldr = 'value-slider';
+        $(document).ready(function() {
+            $('[data-toggle="popover"]').popover();
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
         function createButton() {
             proj = document.getElementById('project');
             but = document.createElement('button');
             but.setAttribute('class','btn');
-            but.setAttribute('id',proj.childNodes().length)
             proj.appendChild(but);
+        }
+
+        function createSimpleButton(arr) {
+            console.log(arr);
+            var id = arr[0]['value'];
+            var content = arr[1]['value'];
+            var name = arr[2]['value'];
+            var value = arr[3]['value'];
+
+            console.log(document.getElementById(id));
+            if (document.getElementById(id) != null)
+                console.log('fail');
+            else {
+                proj = document.getElementById('project');
+                but = document.createElement('button');
+                but.setAttribute('class','btn');
+                but.setAttribute('id', id);
+                but.setAttribute('onclick','sendSimple("' + name + '", "' + value + '")');
+                but.innerHTML = content;
+                proj.appendChild(but);
+            }
+        }
+
+        function getForm(name) {
+            var arr = $('#' + name).serializeArray();
+            if(name == smp_btn) {
+                createSimpleButton(arr);
+            }
         }
     </script>
 {% endblock %}
@@ -57,7 +90,21 @@
 {% block body %}
     <div class="sidebar-wrapper">
         <ul class="sidebar-nav">
-            <li><a onclick="createButton()">Button</a></li>
+            <li><a data-toggle="popover" title="Create a button" data-html="true" data-content="<p>A button that sends a static value</p>
+                                                                                                <form id='simple-button'>
+                                                                                                        <div class='input-group mb-3'>
+                                                                                                            <input id='smpl-btn-id' name='btn-id' class='form-control' data-toggle='tooltip' title='A unique button id' data-placement='right' placeholder='Button ID'>
+                                                                                                        </div>
+                                                                                                        <div class='input-group mb-3'>
+                                                                                                            <input id='smpl-btn-cont' name='btn-cont' class='form-control' data-toggle='tooltip' title='What the button should say' data-placement='right' placeholder='Button Content'>
+                                                                                                        </div>
+                                                                                                        <div class='input-group mb-3'> 
+                                                                                                            <input id='smpl-btn-name' name='btn-name' class='form-control' data-toggle='tooltip' title='Name of the data to be sent' data-placement='right' placeholder='Data Name'>
+                                                                                                        </div>
+                                                                                                        <div class='input=group mb-3'>
+                                                                                                            <input id='smpl-btn-val' name='btn-val' class='form-control' data-toggle='tooltip' title='Value of the data to be sent' data-placement='right' placeholder='Data Value'>
+                                                                                                        </div>
+                                                                                                </form><button class='btn btn-primary' onclick='getForm(smp_btn)'>Create</button>">Simple Button</a></li>
             <li><a onclick="createSlider()">Slider</a></li>
         </ul>
     </div>
