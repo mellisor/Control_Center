@@ -27,3 +27,11 @@ class Widget(models.Model):
     content = models.CharField(max_length = 40)
     return_value = models.CharField(max_length = 10)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+class Room(models.Model):
+    viewers = models.IntegerField(default=0)
+    project = models.OneToOneField(Project,on_delete=models.CASCADE,primary_key=True)
+    
+    @property
+    def group_name(self):
+        return "project-%s" % self.project.project_id

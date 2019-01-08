@@ -27,6 +27,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Channels settings
+
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts" : [(redis_host, 6379)],
+        },
+    },
+}
+
+ASGI_APPLICATION = 'ControlCenter.routing.application'
 
 # Application definition
 
@@ -39,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'accounts',
+    'channels',
 ]
 
 MIDDLEWARE = [
