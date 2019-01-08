@@ -13,6 +13,7 @@ class Project(models.Model):
     secret_key = models.CharField(max_length = 40)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     file_path = models.CharField(max_length = 200,default="NA")
+    viewers = models.IntegerField(default = 0)
 
     class Meta:
         unique_together = ("name","project_id")
@@ -27,11 +28,3 @@ class Widget(models.Model):
     content = models.CharField(max_length = 40)
     return_value = models.CharField(max_length = 10)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-class Room(models.Model):
-    viewers = models.IntegerField(default=0)
-    project = models.OneToOneField(Project,on_delete=models.CASCADE,primary_key=True)
-    
-    @property
-    def group_name(self):
-        return "project-%s" % self.project.project_id

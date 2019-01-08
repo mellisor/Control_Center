@@ -1,0 +1,17 @@
+{% extends 'auth_base.html' %}
+{% block includes %}
+<script>
+    var socket;
+    $(document).ready(function() {
+        socket = new WebSocket('ws://localhost:8000/comm/stream/');
+    });
+
+    function sendSimple(dataName,value) {
+        if ( socket.readyState === 1 ) {
+            console.log(dataName);
+            socket.send('{"'+dataName+'":"'+value+'"}');
+        }
+    }
+</script>
+{% endblock %}
+{% block body %}{{content|safe}}{% endblock %}

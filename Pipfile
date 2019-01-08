@@ -8,6 +8,9 @@ name = "pypi"
 [packages]
 django = "*"
 channels = "*"
+django-redis = "*"
+websockets = "*"
+channels-redis = "*"
 
 [requires]
 python_version = "3.6"

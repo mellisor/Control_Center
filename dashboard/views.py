@@ -32,8 +32,21 @@ def create_project(request):
 
 @login_required
 def edit_project(request,slug):
+    if request.method == 'POST':
+        data = request.POST.get('content')
+        if data is not None:
+            with open('projects/' + slug + '.html','w+') as f:
+                f.write(data)
     if len(Project.objects.filter(project_id=slug)) == 0:
         return HttpResponse("Doesn't Exist")
     content = open('projects/' + slug + '.html').read()
-    return render(request,'project.html',context={'project':slug+'.html','content':content})
+    key = Project.objects.get(project_id=slug).secret_key
+    return render(request,'project.html',context={'project':slug+'.html','key':key,'content':content})
+
+@login_required
+def view_project(request,slug):
+    if len(Project.objects.filter(project_id=slug)) == 0:
+        return HttpResponse("Doesn't Exist")
+    content = open('projects/' + slug + '.html').read()
+    return render(request,'view_project.html',context={'content':content})
     
