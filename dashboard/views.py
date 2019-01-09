@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .models import Project
+from .utils import getProject
 import string
 import random
 from uuid import uuid4
@@ -40,7 +41,7 @@ def edit_project(request,slug):
     if len(Project.objects.filter(project_id=slug)) == 0:
         return HttpResponse("Doesn't Exist")
     content = open('projects/' + slug + '.html').read()
-    key = Project.objects.get(project_id=slug).secret_key
+    key = getProject(slug).secret_key
     return render(request,'project.html',context={'project':slug+'.html','key':key,'content':content})
 
 @login_required
@@ -48,5 +49,6 @@ def view_project(request,slug):
     if len(Project.objects.filter(project_id=slug)) == 0:
         return HttpResponse("Doesn't Exist")
     content = open('projects/' + slug + '.html').read()
-    return render(request,'view_project.html',context={'content':content})
+    proj = getProject(slug)
+    return render(request,'view_project.html',context={'content':content, 'id':proj.project_id, 'key':proj.secret_key})
     

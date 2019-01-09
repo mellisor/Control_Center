@@ -103,23 +103,23 @@
 {% block body %}
     {% csrf_token %}
     <div class="modal fade" id="keyModal" tabindex="-1" role="dialog" aria-labelledby="keyModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="keyModalLabel">This project's secret key</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hiden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{key}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <p>This key can be used to connect to this project via a websocket. The project id is the very end of the URL</p>
-                    </div>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="keyModalLabel">This project's secret key</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hiden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{{key}}</p>
+                </div>
+                <div class="modal-footer">
+                    <p>This key can be used to connect to this project via a websocket. The project id is the very end of the URL</p>
                 </div>
             </div>
         </div>
+    </div>
     <div class="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li><a data-toggle="popover" title="Create a button" data-html="true" data-content="<p>A button that sends a static value</p>

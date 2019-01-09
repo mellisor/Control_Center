@@ -17,14 +17,3 @@ class Project(models.Model):
 
     class Meta:
         unique_together = ("name","project_id")
-
-
-class Widget(models.Model):
-    pos_x = models.IntegerField()
-    pos_y = models.IntegerField()
-    width = models.IntegerField()
-    height = models.IntegerField()
-    widget_type = models.CharField(max_length=2, choices=widget_choices)
-    content = models.CharField(max_length = 40)
-    return_value = models.CharField(max_length = 10)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)

@@ -5,28 +5,18 @@ import channels
 
 class Consumer(AsyncJsonWebsocketConsumer):
 
+    # Websocket functions
+
     async def connect(self):
         await self.accept()
-        self.rooms = set()
-
-
-    async def join_room(self,content):
-        id = content.get('id')
-        key = content.get('key')
-        if id is not None and key is not None:
-            p = Project.objects.get(project_id=id,secret_key=key)
-            if p is not None:
-                self.rooms.append(p)
-        print(self.rooms)
-        resp = {'joined' : id}
-        await self.send_json(resp)
-            
+        self.rooms = list()
 
     async def receive_json(self, content):
-        print(content)
         command = content.get('command')
         if command == 'join':
             await self.join_room(content)
+        elif command == 'message':
+            await self.send_room(content)
         else:
             resp = {'Error':'Command not recognized'}
             await self.send_json(resp)
@@ -34,3 +24,47 @@ class Consumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, code):
         self.rooms = None
         await self.close()
+
+    # Helper functions
+
+    async def join_room(self,content):
+        id = content.get('id')
+        key = content.get('key')
+        if id is not None and key is not None:
+            p = Project.objects.get(project_id=id,secret_key=key)
+            if p is not None:
+                self.rooms.append(p.project_id)
+                await self.channel_layer.group_add(id,self.channel_name)
+                await self.send_json({'join' : 'success'})
+        else:
+            await self.send_json({'Error' : 'Project id/key combination not found'})
+
+    async def send_room(self,content):
+        room = content.get('project')
+        if room in self.rooms:
+            await self.channel_layer.group_send(
+                room,
+                {
+                    "type" : "project.message",
+                    "project_id" : room,
+                    "name" : content.get('name'),
+                    "value" : content.get('value'),
+                }
+            )
+        else:
+            resp = {'Error' : 'Not in project'}
+            await self.send_json(resp)
+
+    # Event handlers
+
+    async def project_message(self,event):
+        # Send message
+        await self.send_json(
+            {
+                "msg_type" : settings.MSG_TYPE_MESSAGE,
+                "project" : event["project_id"],
+                event["name"] : event["value"],
+            }
+        )
+            
+

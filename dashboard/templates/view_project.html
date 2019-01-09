@@ -1,17 +1,88 @@
 {% extends 'auth_base.html' %}
 {% block includes %}
 <script>
+
     var socket;
+    var id;
+
+    function waitForSocketConnection(socket, callback){
+        setTimeout(
+            function () {
+                if (socket.readyState === 1) {
+                    if(callback != null){
+                        callback();
+                    }
+                    return;
+                } else {
+                    waitForSocketConnection(socket, callback);
+                }
+
+            }, 
+        5); // wait 5 milisecond for the connection...
+    }
+
     $(document).ready(function() {
         socket = new WebSocket('ws://localhost:8000/comm/stream/');
+        id = document.getElementById("projectID").innerText;
+        var key = document.getElementById("projectKey").innerText;
+        var cmd = {
+            'command' : 'join',
+            'id' : id,
+            'key' : key,
+        }
+        waitForSocketConnection(socket,function() {
+            socket.send(JSON.stringify(cmd));
+            socket.onmessage = function(event) {
+                console.log(event.data);
+            }
+        });
     });
 
     function sendSimple(dataName,value) {
         if ( socket.readyState === 1 ) {
-            console.log(dataName);
-            socket.send('{"'+dataName+'":"'+value+'"}');
+            var cmd = {
+                'command' : 'message',
+                'project' : id,
+                'name' : dataName,
+                'value' : value,
+            }
+            socket.send(JSON.stringify(cmd));
         }
     }
+
 </script>
 {% endblock %}
-{% block body %}{{content|safe}}{% endblock %}
+{% block navbar %}
+    <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Properties</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a id="secretKey" class="dropdown-item" data-toggle="modal" data-target="#keyModal">Secret Key</a>
+                </div>
+        </li>
+    </ul>
+{% endblock %}
+{% block body %}
+    <div class="modal fade" id="keyModal" tabindex="-1" role="dialog" aria-labelledby="keyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="keyModalLabel">This project's secret key</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hiden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="projectID">ID:</label>
+                    <p id="projectID">{{id}}</p>
+                    <label for="projectKey">Key:</label>
+                    <p id="projectKey">{{key}}</p>
+                </div>
+                <div class="modal-footer">
+                    <p>This key can be used to connect to this project via a websocket. The project id is the very end of the URL</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{content|safe}}
+{% endblock %}

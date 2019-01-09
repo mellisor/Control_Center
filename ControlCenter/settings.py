@@ -42,6 +42,10 @@ CHANNEL_LAYERS = {
 
 ASGI_APPLICATION = 'ControlCenter.routing.application'
 
+# Project settings
+
+MSG_TYPE_MESSAGE = 0
+
 # Application definition
 
 INSTALLED_APPS = [
